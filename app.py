@@ -21,13 +21,13 @@ if uploaded_file is not None:
     # --- Encode Categorical Features ---
     cat_cols = ['Category', 'Region', 'Weather Condition', 'Seasonality']
     for col in cat_cols:
-        df[col] = LabelEncoder().fit_transform(df[col].astype(str))
+        df[col + '_Encoded'] = LabelEncoder().fit_transform(df[col].astype(str))
 
     # --- Feature Selection ---
     features = [
         'Inventory Level', 'Units Sold', 'Units Ordered', 'Price', 'Discount',
-        'Weather Condition', 'Holiday/Promotion', 'Competitor Pricing',
-        'Category', 'Region', 'Seasonality'
+        'Weather Condition_Encoded', 'Holiday/Promotion', 'Competitor Pricing',
+        'Category_Encoded', 'Region_Encoded', 'Seasonality_Encoded'
     ]
     X = df[features]
     y = df['Demand Forecast']
@@ -69,8 +69,8 @@ if uploaded_file is not None:
 
     # --- Filters ---
     with st.expander("🔍 Filter Results"):
-        category = st.selectbox("Category", options=["All"] + list(df['Category'].unique()))
-        region = st.selectbox("Region", options=["All"] + list(df['Region'].unique()))
+        category = st.selectbox("Category", options=["All"] + sorted(df['Category'].dropna().unique()))
+        region = st.selectbox("Region", options=["All"] + sorted(df['Region'].dropna().unique()))
 
     df_filtered = df.copy()
     if category != "All":
